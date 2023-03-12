@@ -55,6 +55,8 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    comment       Comment[]
+    document      Document[]
 }
 
 model VerificationToken {
@@ -63,4 +65,26 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Document {
+    id            String    @id @default(cuid())
+    url           String    
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime? @updatedAt
+    userId        String
+    user          User      @relation(fields: [userId], references: [id]) 
+    comment       Comment[]
+
+}
+
+model Comment {
+    id            String    @id @default(cuid())
+    body          String    @db.Text
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime? @updatedAt
+    userId        String
+    user          User      @relation(fields: [userId], references: [id]) 
+    documentId    String
+    document      Document  @relation(fields: [documentId], references: [id]) 
 }
